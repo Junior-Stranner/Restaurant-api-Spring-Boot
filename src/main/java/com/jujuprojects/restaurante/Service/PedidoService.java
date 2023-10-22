@@ -92,6 +92,7 @@ public class PedidoService {
     private void atualizarPedido(Scanner in) {
 
         boolean isTrue = true;
+        while(isTrue){
 
         System.out.println("Digite o id do Pedido ");
         long idPedido = Long.parseLong(in.nextLine());
@@ -100,7 +101,7 @@ public class PedidoService {
         if(pedidoOptional.isPresent()){
             Pedido atualizaPedido = pedidoOptional.get();
 
-            while(isTrue){
+
                 System.out.println("================================" +
                         "\n O que deseje alterar ?" +
                         "\n 0 - Voltar " +
@@ -116,13 +117,13 @@ public class PedidoService {
                             Optional<Cardapio> optionalCardapio =this.cardapioReposiyory.findById(idCardapio);
                         if (optionalCardapio.isPresent()) {
                             Cardapio cardapio = optionalCardapio.get();
-                            Pedido pedido = new Pedido();
-                            pedido.setCardapio(cardapio);
-                            pedidoRepository.save(pedido);
-                            System.out.println("Pedido salvo com sucesso!");
+                            atualizaPedido.setCardapio(cardapio);
+                            pedidoRepository.save(atualizaPedido);
+                            System.out.println("Pedido Atualizado com sucesso!");
                         } else {
                             System.out.println("Cardápio com ID " + idCardapio + " inexistente");
                         }
+                        break;
 
                     case 2: System.out.println("Digite o id do cliente!");
                             long idCliente = Long.parseLong(in.nextLine());
@@ -130,13 +131,21 @@ public class PedidoService {
                         Optional<Cliente> optionalCliente = this.clienteRepository.findById(idCliente);
                         if (optionalCliente.isPresent()) {
                             Cliente cliente = optionalCliente.get();
-                            Pedido pedido = new Pedido();
-                            pedido.setCliente(cliente);
-                            pedidoRepository.save(pedido);
-                            System.out.println("Pedido salvo com sucesso!");
+                            atualizaPedido.setCliente(cliente);
+                            pedidoRepository.save(atualizaPedido);
+                            System.out.println("Pedido Atualizado com sucesso!");
                         } else {
                             System.out.println("Cliente com ID " + idCliente + " inexistente");
                         }
+                        break;
+                    // Após a execução, perguntar se deseja repetir
+                    System.out.println("Deseja repetir o processo? (Digite 'S' para Sim, 'N' para Não)");
+                    String resposta = in.nextLine().toUpperCase();
+                    if (!resposta.equals("S")) {
+                        isTrue = false;
+                } else {
+                System.out.println("Pedido com ID " + idPedido + " inexistente");
+            }
                 }
             }
         }

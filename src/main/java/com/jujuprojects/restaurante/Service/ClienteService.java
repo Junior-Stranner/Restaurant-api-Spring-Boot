@@ -24,7 +24,7 @@ public class ClienteService {
             System.out.println("\n MENU " +
                     "\n 0 - Voltar "+
                     "\n 1 - Cadastrar Cliente " +
-                    "\n 2 - " +
+                    "\n 2 - Atualizar Cliente" +
                     "\n 4 - Excluir o Cardaápio ");
             op = Integer.parseInt(in.nextLine());
 
