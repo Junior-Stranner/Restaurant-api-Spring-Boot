@@ -1,6 +1,5 @@
 package com.jujuprojects.restaurante.Service;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
 import com.jujuprojects.restaurante.Model.Cardapio;
 import com.jujuprojects.restaurante.Model.Cliente;
 import com.jujuprojects.restaurante.Model.Pedido;
@@ -9,7 +8,7 @@ import com.jujuprojects.restaurante.Repository.ClienteRepository;
 import com.jujuprojects.restaurante.Repository.PedidoRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.lang.reflect.Executable;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -26,6 +25,9 @@ public class PedidoService {
         this.clienteRepository = clienteRepository;
     }
     public void menu() {
+
+        try {
+
         Scanner in = new Scanner(System.in);
         boolean isTrue = true;
         int op = 0;
@@ -36,7 +38,7 @@ public class PedidoService {
                     "\n 1 - Realizar Pedido " +
                     "\n 2 - Atualizar Pedido" +
                     "\n 3 - Cancelar o Pedido " +
-                    "\n 4 - vizualizar Cardápios/Pedidos feitos" +
+                    "\n 4 - vizualizar Cardápios/Pedidos feitos+Clientes" +
                     "\n  ");
             op = Integer.parseInt(in.nextLine());
 
@@ -60,18 +62,24 @@ public class PedidoService {
             }
 
         } while (isTrue);
+
+        } catch(NumberFormatException e){
+            System.out.println("Erro: Não foi Possúvel executar o menu.");
+        }
     }
 
-
-
     private void visualizaPedidosFeitos(Scanner in) {
-        System.out.println("\n ==============================" +
-                "\n Pedidos" +
-                "\n ==============================");
-        Iterable<Pedido>pedidos = this.pedidoRepository.findAll();
+        try {
+            System.out.println("\n ==============================" +
+                    "\n Pedidos" +
+                    "\n ==============================");
+            Iterable<Pedido> pedidos = this.pedidoRepository.findAll();
 
-        for (Pedido pedido : pedidos) {
-            System.out.println(pedidos);
+            for (Pedido pedido : pedidos) {
+                System.out.println(pedido);
+            }
+        }catch (Exception e){
+           e.printStackTrace();
         }
     }
     private void cancelarPedido(Scanner in) {
@@ -90,16 +98,17 @@ public class PedidoService {
         }
     }
     private void atualizarPedido(Scanner in) {
+        try {
 
         boolean isTrue = true;
-        while(isTrue){
+        while(isTrue) {
 
-        System.out.println("Digite o id do Pedido ");
-        long idPedido = Long.parseLong(in.nextLine());
+            System.out.println("Digite o id do Pedido ");
+            long idPedido = Long.parseLong(in.nextLine());
 
-        Optional<Pedido> pedidoOptional = this.pedidoRepository.findById(idPedido);
-        if(pedidoOptional.isPresent()){
-            Pedido atualizaPedido = pedidoOptional.get();
+            Optional<Pedido> pedidoOptional = this.pedidoRepository.findById(idPedido);
+            if (pedidoOptional.isPresent()) {
+                Pedido atualizaPedido = pedidoOptional.get();
 
 
                 System.out.println("================================" +
@@ -107,47 +116,51 @@ public class PedidoService {
                         "\n 0 - Voltar " +
                         "\n 1 - Cardapio " +
                         "\n 2 - informaçoes do cliente ");
-                int op = Integer.parseInt(in.nextLine());
+                int opcao = Integer.parseInt(in.nextLine());
 
-                switch(op){
+                switch (opcao) {
 
-                    case 1: System.out.println("Digite o id do cardapio");
-                            long idCardapio = Long.parseLong(in.nextLine());
+                    case 1:
+                        System.out.println("Digite o id do cardapio");
+                        long idCardapio = Long.parseLong(in.nextLine());
 
-                            Optional<Cardapio> optionalCardapio =this.cardapioReposiyory.findById(idCardapio);
+                        Optional<Cardapio> optionalCardapio = this.cardapioReposiyory.findById(idCardapio);
                         if (optionalCardapio.isPresent()) {
                             Cardapio cardapio = optionalCardapio.get();
                             atualizaPedido.setCardapio(cardapio);
                             pedidoRepository.save(atualizaPedido);
-                            System.out.println("Pedido Atualizado com sucesso!");
+                            System.out.println("\n ********************** \n Pedido Atualizado com sucesso! \n **********************");
                         } else {
                             System.out.println("Cardápio com ID " + idCardapio + " inexistente");
                         }
                         break;
 
-                    case 2: System.out.println("Digite o id do cliente!");
-                            long idCliente = Long.parseLong(in.nextLine());
+                    case 2:
+                        System.out.println("Digite o id do cliente!");
+                        long idCliente = Long.parseLong(in.nextLine());
 
                         Optional<Cliente> optionalCliente = this.clienteRepository.findById(idCliente);
                         if (optionalCliente.isPresent()) {
                             Cliente cliente = optionalCliente.get();
                             atualizaPedido.setCliente(cliente);
                             pedidoRepository.save(atualizaPedido);
-                            System.out.println("Pedido Atualizado com sucesso!");
+                            System.out.println("\n ********************** \n Pedido Atualizado com sucesso! \n **********************");
                         } else {
                             System.out.println("Cliente com ID " + idCliente + " inexistente");
                         }
                         break;
-                    // Após a execução, perguntar se deseja repetir
-                    System.out.println("Deseja repetir o processo? (Digite 'S' para Sim, 'N' para Não)");
-                    String resposta = in.nextLine().toUpperCase();
-                    if (!resposta.equals("S")) {
-                        isTrue = false;
+                }
+                System.out.println("Deseja repetir o processo? (Digite 'S' para Sim, 'N' para Não)");
+                char resposta = in.next().charAt(0);
+                if (resposta != 'S' && resposta != 's') {
+                    isTrue = false;
                 } else {
-                System.out.println("Pedido com ID " + idPedido + " inexistente");
-            }
+                    System.out.println("Pedido com ID " + idPedido + " inexistente");
                 }
             }
+        }
+        } catch(NumberFormatException e){
+            System.out.println("Erro: Não foi Possúvel repetir ou cancelar o processo.");
         }
     }
 
@@ -172,7 +185,7 @@ public class PedidoService {
                     Cardapio cardapio = optionalCardapio.get();
                     Pedido pedido = new Pedido(mesa, cardapio,cliente);
                     pedidoRepository.save(pedido);
-                    System.out.println("Pedido salvo com sucesso!");
+                    System.out.println("\n ********************** \n Pedido Atualizado com sucesso! \n **********************");
                 } else {
                     System.out.println("Cliente com ID " + idCliente + " inexistente");
                     System.out.println("Cardápio com ID " + idCardapio + " inexistente");

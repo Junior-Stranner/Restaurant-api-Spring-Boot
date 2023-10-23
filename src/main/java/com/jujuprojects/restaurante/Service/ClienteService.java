@@ -2,9 +2,11 @@ package com.jujuprojects.restaurante.Service;
 
 import ch.qos.logback.core.net.SyslogOutputStream;
 import com.jujuprojects.restaurante.Model.Cliente;
+import com.jujuprojects.restaurante.Model.Pedido;
 import com.jujuprojects.restaurante.Repository.ClienteRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Scanner;
 
 @Service
@@ -32,14 +34,40 @@ public class ClienteService {
 
                 case 1: cadastroCliente(in);break;
 
-                case 2: break;
+                case 2: visualizarClientes(in);break;
 
-                case 4:  break;
+                case 3: atualizaCliente(in); break;
 
                 default : isTrue = false;
             }
 
         }while(isTrue);
+    }
+
+    private void atualizaCliente(Scanner in) {
+
+        System.out.println("Digite o id do cliente ");
+        long idCliente = Long.parseLong(in.nextLine());
+
+        Optional<Cliente> clienteOptional = this.clienteRepository.findById(idCliente);
+        if(clienteOptional.isPresent()){
+            Cliente atualizaCliente = clienteOptional.get();
+        }
+    }
+
+    private void visualizarClientes(Scanner in) {
+        try {
+            System.out.println("\n ==============================" +
+                    "\n Clientes" +
+                    "\n ==============================");
+            Iterable<Cliente> clientes = this.clienteRepository.findAll();
+
+            for (Cliente cliente : clientes) {
+                System.out.println(cliente);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void cadastroCliente(Scanner in) {

@@ -31,6 +31,7 @@ public class CardapioService {
                     "\n 0 - Voltar "+
                     "\n 1 - Cadastrar Cardápios " +
                     "\n 2 - vizualizar Cardápios cadastrados" +
+                    "\n 3 - Atualizar Cardapio " +
                     "\n 4 - Excluir o Cardaápio ");
              op = Integer.parseInt(in.nextLine());
 
@@ -39,6 +40,8 @@ public class CardapioService {
                  case 1: cadastroCardapio(in);break;
 
                  case 2: visualizaCardapio(in);break;
+                 
+                 case 3: atualizaCardapio(in);break;
 
                  case 4: excluirCardapio(in); break;
 
@@ -46,6 +49,49 @@ public class CardapioService {
              }
 
         }while(isTrue);
+    }
+
+    private void atualizaCardapio(Scanner in) {
+        double desconto = 0;
+
+        System.out.println("Digite o id do Cardapio ");
+        long idCardapio = Long.parseLong(in.nextLine());
+
+        Optional<Cardapio> cardapioOptional = this.cardapioReposiyory.findById(idCardapio);
+        if(cardapioOptional.isPresent()){
+          Cardapio atualizaCardaoio = cardapioOptional.get();
+
+            System.out.println("Digite a comida alterado ");
+            String comida = in.nextLine();
+
+            System.out.println("Digite a bebida");
+            String bebida = in.nextLine();
+
+            System.out.println("Digite o seu combo alterado ");
+            String combo = in.nextLine();
+
+            if(atualizaCardaoio.getPreco() > 50){
+                desconto = 0.90;
+            }else {
+                desconto = 0;
+            }
+            double  totalPreco = atualizaCardaoio.getPreco() * desconto;
+            atualizaCardaoio.setPercentualDesconto((atualizaCardaoio.getPreco()  - totalPreco) / atualizaCardaoio.getPreco()  * 100) ;
+
+            System.out.println("\n Digite o preço com o decsonto :"+totalPreco);
+
+            atualizaCardaoio.setComida(comida);
+            atualizaCardaoio.setBebida(bebida);
+            atualizaCardaoio.setCombo(combo);
+            atualizaCardaoio.setPreco(atualizaCardaoio.getPreco());
+            atualizaCardaoio.setPercentualDesconto(atualizaCardaoio.getPercentualDesconto());
+            atualizaCardaoio.setTotalPreco(totalPreco);
+
+            this.cardapioReposiyory.save(atualizaCardaoio);
+            System.out.println("\n **************************************\n Cardapio  Atualizado com sucesso! \n**************************************");
+
+
+        }
     }
 
     private void excluirCardapio(Scanner in) {
@@ -103,6 +149,6 @@ public class CardapioService {
         cardapio.setTotalPreco(totalPreco);
 
        this.cardapioReposiyory.save(cardapio);
-        System.out.println("Salvo !");
+        System.out.println("\n *********************** \n Cardapio  Salvo com sucesso! \n ***********************");
     }
 }

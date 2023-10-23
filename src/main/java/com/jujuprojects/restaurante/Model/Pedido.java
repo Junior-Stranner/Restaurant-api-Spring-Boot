@@ -18,6 +18,10 @@ public class Pedido {
     @JoinColumn(name = "cliente _id")
     private Cliente cliente;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "formaPagamento_id")
+    private FormaPagamento formaPagamento;
+
     public Pedido(int mesa, Cardapio cardapio, Cliente cliente) {
         this.mesa = mesa;
         this.cardapio = cardapio;

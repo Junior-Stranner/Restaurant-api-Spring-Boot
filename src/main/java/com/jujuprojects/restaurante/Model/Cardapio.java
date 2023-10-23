@@ -106,13 +106,7 @@ public class Cardapio {
         this.pedidos = pedidos;
     }
 
-    @PreRemove
-    public void atualizaPedidoOnRemove(){
-        System.out.println("***********atualizaPedidoOnRemove************");
-        for (Pedido pedido : this.pedidos) {
-            pedido.setCardapio(null);
-        }
-    }
+
 
     @Override
     public String toString() {
